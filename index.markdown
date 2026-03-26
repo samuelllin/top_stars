@@ -8,6 +8,6 @@ layout: home
 
 ## 🤩 Top 1000 GitHub Repositories Ranked by Stars
 
-[📋 View Full Details](./details)
+[📋 View Full Details](./details) &nbsp;|&nbsp; [📈 Weekly Star Growth](./weekly)
 
 {% include_relative table.md %}
