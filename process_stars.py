@@ -102,13 +102,17 @@ def fetch_and_store_repos():
 
 
 def write_table_md():
-    """将今日 stars 排行写入 table.md（Markdown 格式，简洁列）"""
+    """将最新一天 stars 排行写入 table.md（Markdown 格式，简洁列）"""
     with database() as db:
+        latest_day = db.execute(
+            "SELECT MAX(day) FROM stats"
+        ).fetchone()[0]
         with open('table.md', 'w', encoding='utf-8') as f:
             result = db.execute(
-                "SELECT stars, forks, language, full_name, description "
+                "SELECT stars, forks, language, full_name, description, html_url "
                 "FROM stats JOIN repositories ON stats.repository_id = repositories.id "
-                "WHERE stats.day = DATE('now') ORDER BY stats.stars DESC"
+                "WHERE stats.day = ? ORDER BY stats.stars DESC",
+                (latest_day,)
             )
             c = 1
             f.write(
@@ -117,25 +121,30 @@ def write_table_md():
                 '| :---   | :---: | :---: | :---    | :---  | :---        |\n'
             )
             for row in result:
-                stars, forks, language, full_name, description = (map(str, row))
-                description = html.escape(description.replace('|', '')[:500])
-                line = f"| {c} | {stars} | {forks} | {language} | {full_name} | {description} | \n"
+                stars, forks, language, full_name, description, html_url = row
+                stars, forks, language = str(stars), str(forks), str(language)
+                description = html.escape((description or '').replace('|', '')[:500])
+                name_link = f"[{full_name}]({html_url})" if html_url else full_name
+                line = f"| {c} | {stars} | {forks} | {language} | {name_link} | {description} | \n"
                 f.write(line)
                 c += 1
 
 
 def write_full_info_table():
-    """将今日 stars 排行写入 table_full_info.md（包含 URL、大小、时间等完整字段）"""
+    """将最新一天 stars 排行写入 table_full_info.md（包含 URL、大小、时间等完整字段）"""
     with database() as db:
+        latest_day = db.execute(
+            "SELECT MAX(day) FROM stats"
+        ).fetchone()[0]
         with open('table_full_info.md', 'w', encoding='utf-8') as f:
             result = db.execute("""
                 SELECT stats.stars, stats.forks, r.language, r.full_name, r.description,
                        r.html_url, r.clone_url, r.size, r.created_at, r.updated_at, r.pushed_at
                 FROM stats
                 JOIN repositories r ON stats.repository_id = r.id
-                WHERE stats.day = DATE('now')
+                WHERE stats.day = ?
                 ORDER BY stats.stars DESC
-            """)
+            """, (latest_day,))
             c = 1
             f.write(
                 '| Number | Stars | Forks | Language | Name | Description'
@@ -235,10 +244,10 @@ def write_weekly_stars_json():
 
 def main():
     """主流程：依次执行数据库初始化、数据抓取、各报告生成"""
-    # init_database()
-    # fetch_and_store_repos()
-    # write_table_md()
-    # write_full_info_table()
+    init_database()
+    fetch_and_store_repos()
+    write_table_md()
+    write_full_info_table()
     write_weekly_stars_json()
 
 
