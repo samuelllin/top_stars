@@ -8,6 +8,6 @@ layout: home
 
 ## 🤩 Top 1000 GitHub Repositories Ranked by Stars
 
-[📋 View Full Details (with Clone URL, Size, Timestamps)](./details)
+[📋 View Full Details](./details)
 
 {% include_relative table.md %}
