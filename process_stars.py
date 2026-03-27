@@ -171,10 +171,10 @@ def write_full_info_table():
 
 
 def write_weekly_stars_json():
-    """查询最近 10 天数据，计算每日 stars 增量，输出 weekly_stars.json"""
+    """查询最近 20 个周期数据，计算每周期 stars 增量，输出 weekly_stars.json"""
     with database() as db:
         days_result = db.execute(
-            "SELECT DISTINCT day FROM stats ORDER BY day DESC LIMIT 10"
+            "SELECT DISTINCT day FROM stats ORDER BY day DESC LIMIT 20"
         ).fetchall()
         all_days = [d[0] for d in days_result]
 
