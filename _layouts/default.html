@@ -19,18 +19,30 @@
       padding: 4px 10px;
       border: 1px solid #ddd;
     }
-    table td:nth-child(5) {
+    /* 首页 table.md: Number(1) Stars(2) Forks(3) Language(4) Name(5) Description(6) */
+    .page-home table td:nth-child(5) {
       white-space: normal;
       min-width: 150px;
       max-width: 300px;
     }
-    table td:nth-child(6) {
+    .page-home table td:nth-child(6) {
+      white-space: normal;
+      min-width: 200px;
+      max-width: 400px;
+    }
+    /* 详情页 table_full_info.md: Number(1) Stars(2) Forks(3) Language(4) Name(5) Description(6) Clone URL(7) Size(8) ... */
+    .page-details table td:nth-child(5) {
+      white-space: normal;
+      min-width: 150px;
+      max-width: 300px;
+    }
+    .page-details table td:nth-child(6) {
       white-space: normal;
       min-width: 200px;
       max-width: 400px;
     }
   </style>
-  <body>
+  <body class="{% if page.url == '/' %}page-home{% elsif page.url contains 'details' %}page-details{% else %}page-other{% endif %}">
     <main class="page-content" aria-label="Content">
       <div class="wrapper">
         {{ content }}
