@@ -5,3 +5,4 @@ _site
 vendor
 stars_*.json
 
+/.idea/*
