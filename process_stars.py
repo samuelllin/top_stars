@@ -74,7 +74,7 @@ def init_database():
 def fetch_and_store_repos():
     """从 GitHub API 抓取前 10 页热门仓库数据，并写入数据库"""
     with database() as db:
-        for page in range(1, 11):
+        for page in range(1, 21):
             search_results = json_search(page)
             for result in search_results['items']:
                 insert_query = """INSERT OR REPLACE INTO repositories
